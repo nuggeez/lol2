@@ -3,10 +3,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use App\Traits\ApiResponser;
+use App\Models\UserJob;
 
 use App\Models\User;
 Class UserController extends Controller {
     use ApiResponser;
+
     private $request;
     
     public function __construct(Request $request){
@@ -31,14 +33,34 @@ Class UserController extends Controller {
         $rules = [
         'username' => 'required|max:20',
         'password' => 'required|max:20',
-        // 'gender' => 'required|in:Male,Female',
+        'jobid' => 'required|numeric|min:1|not_in:0',
         ];
+
         $this->validate($request,$rules);
+
+        // validate if Jobid is found in the table tbluserjob
+        $userjob = UserJob::findOrFail($request->jobid);
         $user = User::create($request->all());
-        
-        return $this->successResponse($user,
-        Response::HTTP_CREATED);
+
+        return $this->successResponse($user, Response::HTTP_CREATED);
+    }
+
+        public function show($id){
+            $user = User::findOrFail($id);
+            return $this->successResponse($user);
+            // old code
+            /*
+            $user = User::where('userid', $id)->first();
+            if($user){
+            return $this->successResponse($user);
+            }
+            {
+            return $this->errorResponse('User ID Does Not Exists',
+            Response::HTTP_NOT_FOUND);
+            }
+            */
         }
+
     public function update(Request $request,$id)
 {
         $rules = [

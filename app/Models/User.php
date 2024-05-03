@@ -5,9 +5,13 @@ class User extends Model{
  protected $table = 'table_user';
  // columns sa table
  protected $fillable = [
- 'username', 'password', 'gender'
+    'username', 'password', 'jobid'   
  ];
 
-  
+ public $timestamps = false;
+ protected $primaryKey = 'id';
+
+ //protected $hidden = [
+ //   'password',
 
 }
